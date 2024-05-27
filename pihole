@@ -413,7 +413,18 @@ tailFunc() {
 
 piholeCheckoutFunc() {
   if [ -n "${DOCKER_VERSION}" ]; then
-    unsupportedFunc
+    if [[ "$2" != "ftl" ]]; then
+        unsupportedFunc
+        exit 0
+    fi
+
+    # FTL checkout is allowed, we print a message that the change to the
+    # container is not persistent
+    echo "NOTE: FTL checkout is ${COL_LIGHT_RED}not persistent${COL_NC} in Docker containers"
+
+    source "${PI_HOLE_SCRIPT_DIR}"/piholeCheckout.sh
+    shift
+    checkout "$@"
   else
     if [[ "$2" == "-h" ]] || [[ "$2" == "--help" ]]; then
       echo "Usage: pihole checkout [repo] [branch]
